@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router';
-import BookIndex from './components/Book/BookIndex';
-import BookAdd from './components/Book/BookAdd';
-import BookDetail from './components/Book/BookDetail';
+import UserIndex from './components/User/UserIndex';
+import UserAdd from './components/User/UserAdd';
+import UserDetail from './components/User/UserDetail';
 import AuthLogin from './components/Auth/Login';
 
 Vue.use(VueRouter)
@@ -14,16 +14,16 @@ export default new VueRouter({
             component: AuthLogin
         },
         {
-            path: "/book",
-            component: BookIndex,
+            path: "/user",
+            component: UserIndex,
         },
         {
-            path: "/book/add",
-            component: BookAdd
+            path: "/user/add",
+            component: UserAdd
         },
         {
-            path: "/book/:id",
-            component: BookDetail
+            path: "/user/:id",
+            component: UserDetail
         },
     ]
 })

@@ -21,8 +21,7 @@
                 </ul>
             </div>
             <form action="" @submit.prevent="register()">
-                <input class='form-control' type="text" placeholder="First Name" v-model="registerData.first_name">
-                <input class='form-control' type="text" placeholder="Last Name" v-model="registerData.last_name">
+                <input class='form-control' type="text" placeholder="Nama" v-model="registerData.nama">
                 <input class='form-control' type="text" placeholder="Username" v-model="registerData.username">
                 <input class='form-control' type="password" placeholder="Password" v-model="registerData.password">
                 <input class='form-control' type="password" placeholder="Confirm Password" v-model="registerData.confirm_password">
@@ -34,17 +33,17 @@
 
 <script>
 export default {
-    mounted() {
-        let token = localStorage.getItem('token');
-        this.$axios.get(`/book?token=${token}`)
-            .then(res => {
-                this.$router.push('/book')
-                console.log(res);
-            }).catch(err => {
-                if(err.response.status == 401) {
-                this.$router.push('/login')
-                }
-            })
+    async mounted() {
+        try {
+            const auth =  await this.$axios.post(`/auth/token`);
+            console.log(auth)
+
+            // if (auth.data.status == 'success') this.$router.push('/book');
+            // else this.$router.push('/login');
+        }
+        catch(err) {
+            // this.$router.push('/login');
+        }
     },
     data() {
         return {
@@ -59,33 +58,50 @@ export default {
                 username: '',
                 password: '',
                 confirm_password: '',
-                first_name: '',
-                last_name: '',
+                nama: '',
             }
         }
     },
     methods: {
-        login() {
-            this.$axios.post('/auth/login', {username: this.loginData.username, password: this.loginData.password})
-                .then(res => {
-                    localStorage.setItem('token', res.data.token)
-                    this.$router.push('/book');
-                }).catch(err => {
-                    console.log(err.response.data)
-                    this.loginData.error = err.response.data
+        async login() {
+            try {
+                const signin = await this.$axios.post('/auth/login', {
+                    username: this.loginData.username, 
+                    password: this.loginData.password
                 });
+
+                if (signin) {
+                    let token = `Bearer ${signin.data.token}`;
+                    localStorage.setItem('token', token);
+                    this.$axios.defaults.headers.common['Authorization'] = token;
+                    this.$router.push('/user');
+                }
+            }
+            catch(err) {
+                this.loginData.success = false;
+                this.loginData.error = err.response.data.message;
+            }
         },
-        register() {
-            this.$axios.post("/auth/register", {username: this.registerData.username, password: this.registerData.password, first_name: this.registerData.first_name, last_name: this.registerData.last_name})
-                .then(res => {
-                    let token = res.data.token;
+        async register() {
+            try {
+                const signup = await this.$axios.post("/auth/register", {
+                    username: this.registerData.username, 
+                    password: this.registerData.password, 
+                    nama: this.registerData.nama
+                });
+
+                if (signup) {
+                    let token = `Bearer ${signup.data.token}`;
                     localStorage.setItem('token',token);
-                    this.$router.push('/book');
+                    this.$axios.defaults.headers.common['Authorization'] = token;
+                    this.$router.push('/user');
                     console.log(res);
-                }).catch(err => {
-                    this.registerData.error = err.response.data
-                    console.log(err.response);
-                })
+                }
+            }
+            catch(err) {
+                this.registerData.error = err.response.data;
+                console.log(err.response);
+            }
         }
     }
 }

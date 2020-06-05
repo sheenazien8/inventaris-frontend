@@ -43,21 +43,33 @@ export default {
         }
     },
     methods: {
-        addBook() {
-            this.$axios.post(`/book?token=${this.token}`, {title:this.add.title, pages: this.add.number_of_pages, authors: this.add.authors, isbn: this.add.isbn})
-                .then(res=>{
+        async addBook() {
+            try {
+                const res = await this.$axios.post(`/book?token=${this.token}`, {
+                    title:this.add.title, 
+                    pages: this.add.number_of_pages, 
+                    authors: this.add.authors, 
+                    isbn: this.add.isbn
+                })
+
+                if (res) {
                     this.add.success = res.data.message;
                     this.add.title = "";
                     this.add.authors = [""];
                     this.add.isbn = '';
-                    this.add.number_of_pages = ''
-                }).catch(err => {
-                    if(err.response.status == 401) {
-                        this.$router.push('/login')
-                    }else{
-                        this.add.error = err.response.data
-                    }
-                });
+                    this.add.number_of_pages = '';
+                }
+            }
+            catch(err) {
+                if(err.response.data.message == 'token authentication is required' ||
+                    err.response.data.message == 'invalid token') {
+                    this.$router.push('/login');
+                } else {
+                    this.add.success = false;
+                    this.add.err = err.response.data.message;
+                    this.errors.push(err.response.data.message);
+                }
+            }
         }
     }
 }

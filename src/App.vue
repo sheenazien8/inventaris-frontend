@@ -2,10 +2,10 @@
   <div id="app">
     <div class="header">
         <router-link to="/book">
-        <span class="buku">Buku</span><span class="bagus">Bagus</span>
+        <span class="buku">Simple</span><span class="bagus">Inventaris</span>
         </router-link>
         <div class="right">
-            <a href="" @click="logout">Logout</a>
+            <a href="#" @click="logout">Logout</a>
         </div>
     </div>
     <router-view/>
@@ -13,32 +13,45 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   mounted() {
-    this.$router.push("/login")
+    this.check()
   },
   name: 'app',
   components: {
-    HelloWorld
+
   },
-  
   methods: {
-    logout() {
-      let token = localStorage.getItem('token');
+    async logout() {
+      try {
+        const signout = await this.$axios.post(`/auth/token`);
 
-      this.$axios.get('/auth/logout?token='+token)
-        .then(res => {
+        if (signout.data.status == 'success') {
           localStorage.removeItem('token');
-          this.$router.push('/login');    
-        }).catch(err => {
-            if(err.response.status == 401) {
-                this.$router.push('/login')
-            }
-        })
-      
+          this.$axios.defaults.headers.common['Authorization'] = '';
+          this.$router.push('/login');
+        }
+      }
+      catch(err) {
+        if(err.response.message == 'token authentication is required' ||
+          err.response.message == 'invalid token') {
+          this.$router.push('/login');
+        }
+      }
+    },
+    async check() {
+      try {
+        const check = await this.$axios.post(`/auth/token`);
 
+        if (check.status == 'success') this.$router.push('/user');
+      }
+      catch(err) {
+        if(err.response.message == 'token authentication is required' ||
+          err.response.message == 'invalid token') {
+          this.$router.push('/login');
+        }
+      }
     }
   }
 }

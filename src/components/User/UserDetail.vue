@@ -88,30 +88,41 @@ export default {
         }   
     },
     methods: {
-        getData() {
-            this.$axios.get(`/book/${this.book_id}?token=${this.token}`)
-                .then(res=> {
-                    this.book = res.data.data;
-                    console.log(res.data.data);
-                }).catch(err => {
-                    if(err.response.status == 401) {
-                        this.$router.push('/login')
-                    }
-                });
+        async getData() {
+            try {
+                const res = await this.$axios.get(`/book/${this.book_id}?token=${this.token}`);
+                
+                if (res) this.book = res.data.data;
+            }
+            catch(err) {
+                if(err.response.data.message == 'token authentication is required' ||
+                    err.response.data.message == 'invalid token') {
+                    this.$router.push('/login');
+                }
+            }
         },
 
-        addReview() {
-            this.$axios.post(`/book/${this.book_id}/rating?token=${this.token}`, {rating:this.add.rating})
-                .then(res => {
-                    console.log('rating success')
+        async addReview() {
+            try {
+                const addRating = await this.$axios.post(`/book/${this.book_id}/rating?token=${this.token}`, {
+                    rating:this.add.rating
+                });
+                
+                const addReview = await this.$axios.post(`/book/${this.book_id}/review?token=${this.token}`, {
+                    review:this.add.review
                 });
 
-            this.$axios.post(`/book/${this.book_id}/review?token=${this.token}`, {review:this.add.review})
-                .then(res => {
-                    console.log('review successs');
+                if (addRating && addReview) {
                     this.getData();
                     this.add.review = "";
-                })
+                }
+            }
+            catch(err) {
+                if(err.response.data.message == 'token authentication is required' ||
+                    err.response.data.message == 'invalid token') {
+                    this.$router.push('/login');
+                }
+            }
         }
     }
 }
