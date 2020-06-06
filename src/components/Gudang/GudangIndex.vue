@@ -2,22 +2,26 @@
     <div class="container">
         <div class="card books">
             <div class="card-header">
-                <h4>Users</h4>
+                <h4>Gudang</h4>
             </div>
             <div class="card-body">
-                <router-link to="/user/add" class='btn float-right'>Add User</router-link>
+                <router-link to="/gudang/add" class='btn float-right'>Add Gudang</router-link>
                 <div class="table table-responsive">
                     <table>
                         <thead>
                             <tr>
-                                <th>Username</th>
+                                <th>Kode Gudang</th>
+                                <th>Nama Gudang</th>
+                                <th>Alamat</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="user in users" :key="user.id">
-                                <td>{{user.username}}</td>
-                                <td><router-link :to="`/user/${user.id}`" class='btn'>Open</router-link></td>
+                            <tr v-for="gudang in gudangs" :key="gudang.id">
+                                <td>{{ gudang.kode_gudang }}</td>
+                                <td>{{ gudang.nama_gudang }}</td>
+                                <td>{{ gudang.alamat }}</td>
+                                <td><router-link :to="`/gudang/${gudang.id}`" class='btn'>Open</router-link></td>
                             </tr>
                         </tbody>
                     </table>
@@ -34,16 +38,16 @@ export default {
     },
     data() {
         return {
-            users: []
+            gudangs: []
         }
     },
     methods: {
         async getData() {
             try {
                 const res = await this.$axios.post(`/auth/token`);
-                const user = await this.$axios.get(`user`);
+                const gudang = await this.$axios.get(`gudang`);
                 
-                if (user) this.users = user.data.data.data;
+                if (gudang) this.gudangs = gudang.data.data.data;
             }
             catch(err) {
                 if(err.response.data.message == 'token authentication is required' ||

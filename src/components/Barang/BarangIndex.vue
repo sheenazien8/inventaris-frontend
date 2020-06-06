@@ -2,22 +2,24 @@
     <div class="container">
         <div class="card books">
             <div class="card-header">
-                <h4>Users</h4>
+                <h4>Barang</h4>
             </div>
             <div class="card-body">
-                <router-link to="/user/add" class='btn float-right'>Add User</router-link>
+                <router-link to="/barang/add" class='btn float-right'>Add Barang</router-link>
                 <div class="table table-responsive">
                     <table>
                         <thead>
                             <tr>
-                                <th>Username</th>
+                                <th>Kode Barang</th>
+                                <th>Nama Barang</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="user in users" :key="user.id">
-                                <td>{{user.username}}</td>
-                                <td><router-link :to="`/user/${user.id}`" class='btn'>Open</router-link></td>
+                            <tr v-for="barang in barangs" :key="barang.id">
+                                <td>{{ barang.kode_barang }}</td>
+                                <td>{{ barang.nama_barang }}</td>
+                                <td><router-link :to="`/barang/${barang.id}`" class='btn'>Open</router-link></td>
                             </tr>
                         </tbody>
                     </table>
@@ -34,16 +36,16 @@ export default {
     },
     data() {
         return {
-            users: []
+            barangs: []
         }
     },
     methods: {
         async getData() {
             try {
                 const res = await this.$axios.post(`/auth/token`);
-                const user = await this.$axios.get(`user`);
+                const barang = await this.$axios.get(`barang`);
                 
-                if (user) this.users = user.data.data.data;
+                if (barang) this.barangs = barang.data.data.data;
             }
             catch(err) {
                 if(err.response.data.message == 'token authentication is required' ||

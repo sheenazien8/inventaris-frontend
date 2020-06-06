@@ -1,16 +1,20 @@
 <template>
     <div class="container detail">
         <div class="book-title">
-            <h3>{{user.nama}}</h3>
+            <h3>{{gudang.nama_gudang}}</h3>
         </div>
         <table class='table table-bordered'>
             <tr>
-                <td>Nama:</td>
-                <td>{{ user.nama }}</td>
+                <td>Kode Gudang:</td>
+                <td>{{ gudang.kode_gudang }}</td>
             </tr>
             <tr>
-                <td>Username:</td>
-                <td>{{ user.username }}</td>
+                <td>Nama Gudang:</td>
+                <td>{{ gudang.nama_gudang }}</td>
+            </tr>
+            <tr>
+                <td>Alamat Gudang:</td>
+                <td>{{ gudang.alamat }}</td>
             </tr>
         </table>
     </div>        
@@ -22,8 +26,8 @@ export default {
     },
     data(){
         return {
-            user: {},
-            user_id: this.$route.params.id,
+            gudang: {},
+            gudang_id: this.$route.params.id,
             success: false,
             error: false
         }   
@@ -31,11 +35,11 @@ export default {
     methods: {
         async getData() {
             try {
-                const user = await this.$axios.get(`/user/${this.user_id}`);
+                const gudang = await this.$axios.get(`/gudang/${this.gudang_id}`);
                 
-                if (user)
+                if (gudang)
                     this.success = true; 
-                    this.user = user.data.data;
+                    this.gudang = gudang.data.data;
             }
             catch(err) {
                 if(err.response.data.message == 'token authentication is required' ||
