@@ -9,6 +9,12 @@ import BarangDetail from './components/Barang/BarangDetail';
 import GudangIndex from './components/Gudang/GudangIndex';
 import GudangAdd from './components/Gudang/GudangAdd';
 import GudangDetail from './components/Gudang/GudangDetail';
+import InventarisIndex from './components/Inventaris/InventarisIndex';
+import InventarisAdd from './components/Inventaris/InventarisAdd';
+import InventarisDetail from './components/Inventaris/InventarisDetail';
+import LogIndex from './components/Log/LogIndex';
+import LogAdd from './components/Log/LogAdd';
+import LogDetail from './components/Log/LogDetail';
 import AuthLogin from './components/Auth/Login';
 import AuthRegister from './components/Auth/Register';
 
@@ -59,6 +65,30 @@ export default new VueRouter({
         {
             path: "/gudang/:id",
             component: GudangDetail
+        },
+        {
+            path: "/inventaris",
+            component: InventarisIndex,
+        },
+        {
+            path: "/inventaris/add",
+            component: InventarisAdd
+        },
+        {
+            path: "/inventaris/:id",
+            component: InventarisDetail
+        },
+        {
+            path: "/log",
+            component: LogIndex,
+        },
+        {
+            path: "/log/add",
+            component: LogAdd
+        },
+        {
+            path: "/log/:id",
+            component: LogDetail
         },
     ]
 })

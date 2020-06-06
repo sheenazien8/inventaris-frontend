@@ -7,7 +7,7 @@ import axios from 'axios'
 
 Vue.use(VueRouter);
 
-axios.defaults.baseURL = "http://lab.osyduck.me:1337"
+axios.defaults.baseURL = "http://lab.osyduck.me:1440"
 const token = localStorage.getItem('token');
 axios.defaults.headers.common['Authorization'] = token ? token : '';
 Vue.prototype.$axios = axios;
