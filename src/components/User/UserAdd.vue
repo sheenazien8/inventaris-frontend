@@ -2,22 +2,16 @@
         <div class="container">
             <div class="form">
                 <div class="alert-success" v-if="this.add.success !== false">{{ this.add.success }}</div>
-                <div class="alert alert-danger" v-if="this.add.error.status == false">
-                    <ul>
-                        <li v-for="(key) in this.add.error.errors" :key="key">
-                            {{key[0]}}
-                        </li>
-                    </ul>
+                <div class="alert alert-danger" v-if="this.add.error !== false">
+                    {{ this.add.error }}
                 </div>
-                <h3>Add book</h3>
+                <h3>Add user</h3>
                 <div class="card-body">
-                    <form action="" @submit.prevent="addBook()">
-                        <input type="text" placeholder="book title" class='form-control' v-model="add.title">
-                        <input type="text" placeholder="ISBN" class='form-control' v-model="add.isbn">
-                        <input type="number" min=1 placeholder="number of pages" class='form-control' v-model="add.number_of_pages">
-                        <input type="text" placeholder="author" class='form-control' v-model="add.authors[index]" :key="index" v-for="(author,index) in add.authors">
-                        <input type="submit" value="Add Book" class='btn float-right'>
-                        <button class='btn-sky float-right' type="button" @click="add.authors.push('')">add another author</button>
+                    <form action="" @submit.prevent="addUser()">
+                        <input type="text" placeholder="Nama Lengkap..." class='form-control' v-model="add.nama">
+                        <input type="text" placeholder="Username..." class='form-control' v-model="add.username">
+                        <input type="password" placeholder="Password..." class='form-control' v-model="add.password">
+                        <input type="submit" value="Add user" class='btn float-right'>
                     </form>
                 </div>
             </div>
@@ -26,16 +20,14 @@
 <script>
 export default {
     mounted() {
-
+        this.check()
     },
     data() {
         return {
-            token: localStorage.getItem('token'),
             add: {
-                title: '',
-                isbn: '',
-                number_of_pages: '',
-                authors: [""],
+                nama: '',
+                username: '',
+                password: '',
                 success: false,
                 error: false
             },
@@ -43,21 +35,30 @@ export default {
         }
     },
     methods: {
-        async addBook() {
+        async check() {
             try {
-                const res = await this.$axios.post(`/book?token=${this.token}`, {
-                    title:this.add.title, 
-                    pages: this.add.number_of_pages, 
-                    authors: this.add.authors, 
-                    isbn: this.add.isbn
+                const res = await this.$axios.post(`/auth/token`);
+            }
+            catch(err) {
+                if(err.response.data.message == 'token authentication is required' ||
+                    err.response.data.message == 'invalid token') {
+                    this.$router.push('/login');
+                }
+            }
+        },
+        async addUser() {
+            try {
+                const res = await this.$axios.post(`/user`, {
+                    nama:this.add.nama, 
+                    username: this.add.username, 
+                    password: this.add.password
                 })
 
                 if (res) {
-                    this.add.success = res.data.message;
-                    this.add.title = "";
-                    this.add.authors = [""];
-                    this.add.isbn = '';
-                    this.add.number_of_pages = '';
+                    this.add.success = `User successfully added`;
+                    this.add.nama = '';
+                    this.add.username = '';
+                    this.add.password = '';
                 }
             }
             catch(err) {
@@ -66,8 +67,10 @@ export default {
                     this.$router.push('/login');
                 } else {
                     this.add.success = false;
-                    this.add.err = err.response.data.message;
-                    this.errors.push(err.response.data.message);
+                    this.add.error = err.response.data.message;
+                    error.response.data.errors.map((error) => {
+                        this.errors.push(error);
+                    });
                 }
             }
         }

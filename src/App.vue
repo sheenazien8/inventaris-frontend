@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="header">
-        <router-link to="/book">
+        <router-link to="/user">
         <span class="buku">Simple</span><span class="bagus">Inventaris</span>
         </router-link>
         <div class="right">

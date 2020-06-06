@@ -4,6 +4,7 @@ import UserIndex from './components/User/UserIndex';
 import UserAdd from './components/User/UserAdd';
 import UserDetail from './components/User/UserDetail';
 import AuthLogin from './components/Auth/Login';
+import AuthRegister from './components/Auth/Register';
 
 Vue.use(VueRouter)
 export default new VueRouter({
@@ -12,6 +13,10 @@ export default new VueRouter({
         {
             path: "/login",
             component: AuthLogin
+        },
+        {
+            path: "/register",
+            component: AuthRegister
         },
         {
             path: "/user",
