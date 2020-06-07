@@ -29,6 +29,10 @@ export default {
 
         if (signout.data.status == 'success') {
           localStorage.removeItem('token');
+          localStorage.removeItem('user_id');
+          localStorage.removeItem('username');
+          localStorage.removeItem('nama');
+          localStorage.removeItem('role');
           this.$axios.defaults.headers.common['Authorization'] = '';
           this.$router.push('/login');
         }

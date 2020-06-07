@@ -5,7 +5,7 @@
                 <h4>Logs</h4>
             </div>
             <div class="card-body">
-                <router-link to="/inventaris/add" class='btn float-right'>Add Logs</router-link>
+                <router-link to="/log/add" class='btn float-right'>Add Logs</router-link>
                 <div class="table table-responsive">
                     <table>
                         <thead>

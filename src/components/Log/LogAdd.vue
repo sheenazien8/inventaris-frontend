@@ -8,6 +8,10 @@
                 <h3>Add log</h3>
                 <div class="card-body">
                     <form action="" @submit.prevent="addLog()">
+                        <select v-if="role === -1" v-model="add.user_id" class='form-control' v-on:change="onChangeUser()">
+                            <option value="0">Pilih user</option>
+                            <option v-for="user in userOptions" :value="user.id">{{ user.username }} - {{ user.nama }}</option>
+                        </select>
                         <select v-model="add.gudang_id" class='form-control'>
                             <option disabled value="0">Pilih gudang</option>
                             <option v-for="gudang in gudangOptions" :value="gudang.id">{{ gudang.kode_gudang }} - {{ gudang.nama_gudang }}</option>
@@ -16,12 +20,8 @@
                             <option disabled value="0">Pilih barang</option>
                             <option v-for="barang in barangOptions" :value="barang.id">{{ barang.kode_barang }} - {{ barang.nama_barang }}</option>
                         </select>
-                        <select v-model="add.user_id" class='form-control'>
-                            <option disabled value="0">Pilih user</option>
-                            <option v-for="user in userOptions" :value="user.id">{{ user.username }} - {{ user.nama }}</option>
-                        </select>
                         <select v-model="add.jenis" class='form-control'>
-                            <option disabled value="0">Pilih jenis</option>
+                            <option disabled value="">Pilih jenis</option>
                             <option value="keluar">Keluar</option>
                             <option value="masuk">Masuk</option>
                         </select>
@@ -36,6 +36,8 @@
 export default {
     mounted() {
         this.check()
+        this.getUserId()
+        this.getUserRole()
         this.getBarangOptions()
         this.getGudangOptions()
         this.getUserOptions()
@@ -53,6 +55,8 @@ export default {
             },
             barangOptions: [],
             gudangOptions: [],
+            userOptions: [],
+            role: 0,
             errors: []
         }
     },
@@ -70,19 +74,21 @@ export default {
         },
         async addLog() {
             try {
-                const res = await this.$axios.post(`/log`, {
+                const body = {
                     gudang_id: this.add.gudang_id,
                     barang_id: this.add.barang_id,
-                    user_id: this.add.user_id,
                     jenis: this.add.jenis,
                     jumlah: this.add.jumlah,
-                })
+                }
+
+                if (this.add.user_id != 0) body.user_id = this.add.user_id;
+
+                const res = await this.$axios.post(`/log`, body);
 
                 if (res) {
                     this.add.success = `Log successfully added`;
                     this.add.gudang_id = 0;
                     this.add.barang_id = 0;
-                    this.add.user_id = 0;
                     this.add.jenis = '';
                     this.add.jumlah = 0;
                 }
@@ -102,26 +108,34 @@ export default {
         },
         async getBarangOptions() {
             try {
-                const barang = await this.$axios.get(`/barang`)
+                const param = {}
+                if (this.add.user_id != 0) param.user_id = this.add.user_id;
+                const barang = await this.$axios.get(`/barang`, {
+                    params: param
+                });
 
                 if (barang) {
                     this.barangOptions = barang.data.data.data;
                 }
             }
             catch(err) {
-
+                this.barangOptions = [];
             }
         },
         async getGudangOptions() {
             try {
-                const gudang = await this.$axios.get(`/gudang`)
+                const param = {}
+                if (this.add.user_id != 0) param.user_id = this.add.user_id;
+                const gudang = await this.$axios.get(`/gudang`, {
+                    params: param
+                });
 
                 if (gudang) {
                     this.gudangOptions = gudang.data.data.data;
                 }
             }
             catch(err) {
-                
+                this.gudangOptions = [];
             }
         },
         async getUserOptions() {
@@ -134,6 +148,34 @@ export default {
             }
             catch(err) {
                 
+            }
+        },
+        async getUserId() {
+            try {
+                const user_id = localStorage.getItem('user_id');
+                if (user_id) this.add.user_id = Number.parseInt(user_id);
+            }
+            catch(err) {
+
+            }
+        },
+        async getUserRole() {
+            try {
+                const role = localStorage.getItem('role');
+                if (role) this.role = Number.parseInt(role);
+                if (role == -1) this.add.user_id = 0;
+            }
+            catch(err) {
+
+            }
+        },
+        async onChangeUser() {
+            try {
+                this.getBarangOptions();
+                this.getGudangOptions();
+            }
+            catch(err) {
+
             }
         }
     }

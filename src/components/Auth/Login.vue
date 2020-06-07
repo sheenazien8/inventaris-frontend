@@ -59,6 +59,10 @@ export default {
                 if (signin) {
                     let token = `Bearer ${signin.data.token}`;
                     localStorage.setItem('token', token);
+                    localStorage.setItem('user_id', signin.data.data.id);
+                    localStorage.setItem('username', signin.data.data.username);
+                    localStorage.setItem('nama', signin.data.data.nama);
+                    localStorage.setItem('role', signin.data.data.role);
                     this.$axios.defaults.headers.common['Authorization'] = token;
                     this.$router.push('/user');
                 }

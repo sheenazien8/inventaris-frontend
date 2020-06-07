@@ -10,6 +10,10 @@
                     <form action="" @submit.prevent="addGudang()">
                         <input type="text" placeholder="Nama Gudang..." class='form-control' v-model="add.nama_gudang">
                         <input type="text" placeholder="Alamat Gudang..." class='form-control' v-model="add.alamat">
+                        <select v-if="role === -1" v-model="add.user_id" class='form-control'>
+                            <option disabled value="0">Pilih user</option>
+                            <option v-for="user in userOptions" :value="user.id">{{ user.username }} - {{ user.nama }}</option>
+                        </select>
                         <input type="submit" value="Add gudang" class='btn float-right'>
                     </form>
                 </div>
@@ -20,15 +24,20 @@
 export default {
     mounted() {
         this.check()
+        this.getUserId()
+        this.getUserRole()
+        this.getUserOptions()
     },
     data() {
         return {
             add: {
                 nama_gudang: '',
                 alamat: '',
+                user_id: 0,
                 success: false,
                 error: false
             },
+            role: 0,
             errors: []
         }
     },
@@ -46,10 +55,14 @@ export default {
         },
         async addGudang() {
             try {
-                const res = await this.$axios.post(`/gudang`, {
+                const body = {
                     nama_gudang: this.add.nama_gudang,
-                    alamat: this.add.alamat
-                })
+                    alamat: this.add.alamat,
+                    user_id: this.add.user_id
+                }
+
+                if (this.add.user_id != 0) body.user_id = this.add.user_id;
+                const res = await this.$axios.post(`/gudang`, body);
 
                 if (res) {
                     this.add.success = `Gudang successfully added`;
@@ -68,6 +81,37 @@ export default {
                         this.errors.push(error);
                     });
                 }
+            }
+        },
+        async getUserOptions() {
+            try {
+                const user = await this.$axios.get(`/user`)
+
+                if (user) {
+                    this.userOptions = user.data.data.data;
+                }
+            }
+            catch(err) {
+                
+            }
+        },
+        async getUserId() {
+            try {
+                const user_id = localStorage.getItem('user_id');
+                if (user_id) this.add.user_id = user_id;
+            }
+            catch(err) {
+
+            }
+        },
+        async getUserRole() {
+            try {
+                const role = localStorage.getItem('role');
+                if (role) this.role = role;
+                if (role == -1) this.add.user_id = 0;
+            }
+            catch(err) {
+
             }
         }
     }
