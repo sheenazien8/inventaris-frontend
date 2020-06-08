@@ -27,6 +27,7 @@ export default {
                 error: false,
                 username: '',
                 password: '',
+                role: 1,
                 confirm_password: '',
                 nama: '',
             }
@@ -55,7 +56,8 @@ export default {
                 const signup = await this.$axios.post("/auth/register", {
                     username: this.registerData.username, 
                     password: this.registerData.password, 
-                    nama: this.registerData.nama
+                    nama: this.registerData.nama,
+                    role: this.registerData.role
                 });
 
                 if (signup) {
