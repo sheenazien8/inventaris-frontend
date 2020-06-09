@@ -48,9 +48,9 @@ export default {
         },
         async register() {
             try {
-                if (this.registerData.nama || 
-                    this.registerData.username || 
-                    this.registerData.password) {
+                if (this.registerData.nama == '' || 
+                    this.registerData.username == '' || 
+                    this.registerData.password == '') {
                     throw new Error(`Field harus diisi semua`);
                 }
                 const signup = await this.$axios.post("/auth/register", {
@@ -61,10 +61,7 @@ export default {
                 });
 
                 if (signup) {
-                    let token = `Bearer ${signup.data.token}`;
-                    localStorage.setItem('token',token);
-                    this.$axios.defaults.headers.common['Authorization'] = token;
-                    this.$router.push('/user');
+                    this.$router.push('/login');
                 }
             }
             catch(err) {
