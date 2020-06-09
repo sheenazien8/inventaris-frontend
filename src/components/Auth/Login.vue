@@ -26,13 +26,6 @@ export default {
                 password: '',
                 success: false,
                 error: false,
-            },
-            registerData: {
-                error: '',
-                username: '',
-                password: '',
-                confirm_password: '',
-                nama: '',
             }
         }
     },
@@ -64,31 +57,12 @@ export default {
                     localStorage.setItem('nama', signin.data.data.nama);
                     localStorage.setItem('role', signin.data.data.role);
                     this.$axios.defaults.headers.common['Authorization'] = token;
-                    this.$router.push('/user');
+                    this.$router.push('/gudang');
                 }
             }
             catch(err) {
                 this.loginData.success = false;
                 this.loginData.error = err.response.data.message;
-            }
-        },
-        async register() {
-            try {
-                const signup = await this.$axios.post("/auth/register", {
-                    username: this.registerData.username, 
-                    password: this.registerData.password, 
-                    nama: this.registerData.nama
-                });
-
-                if (signup) {
-                    let token = `Bearer ${signup.data.token}`;
-                    localStorage.setItem('token',token);
-                    this.$axios.defaults.headers.common['Authorization'] = token;
-                    this.$router.push('/user');
-                }
-            }
-            catch(err) {
-                this.registerData.error = err.response.data;
             }
         }
     }

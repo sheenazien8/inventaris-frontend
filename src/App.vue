@@ -1,11 +1,30 @@
 <template>
   <div id="app">
     <div class="header">
-        <router-link to="/user">
+        <router-link to="/gudang">
         <span class="buku">Simple</span><span class="bagus">Inventaris</span>
         </router-link>
-        <div class="right">
-            <a href="#" @click="logout">Logout</a>
+        <div class="right" v-if="getToken != ''">
+          <router-link to="/gudang">
+            <span>Gudang</span>
+          </router-link>
+          <router-link to="/barang">
+            <span>Barang</span>
+          </router-link>
+          <router-link to="/inventaris">
+            <span>Inventaris</span>
+          </router-link>
+          <router-link to="/log">
+            <span>Log</span>
+          </router-link>
+          <router-link to="/profile">
+            <span>Profil</span>
+          </router-link>
+          <router-link v-if="getRole == -1" to="/user">
+            <span>User</span>
+          </router-link>
+          <span></span>
+          <a href="#" @click="logout">Logout</a>
         </div>
     </div>
     <router-view/>
@@ -21,6 +40,23 @@ export default {
   name: 'app',
   components: {
 
+  },
+  mounted() {
+
+  },
+  computed: {
+    getNama: function() {
+      return localStorage.getItem('nama') ? localStorage.getItem('nama') : '';
+    },
+    getRole: function () {
+      return localStorage.getItem('role') ? localStorage.getItem('role') : 0;
+    },
+    getUsername: function() {
+      return localStorage.getItem('username') ? localStorage.getItem('username') : '';
+    },
+    getToken: function() {
+      return localStorage.getItem('token') ? localStorage.getItem('token') : '';
+    }
   },
   methods: {
     async logout() {
@@ -48,7 +84,7 @@ export default {
       try {
         const check = await this.$axios.post(`/auth/token`);
 
-        if (check.status == 'success') this.$router.push('/user');
+        if (check.status == 'success') this.$router.push('/gudang');
       }
       catch(err) {
         if(err.response.message == 'token authentication is required' ||

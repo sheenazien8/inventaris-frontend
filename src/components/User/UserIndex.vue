@@ -12,12 +12,14 @@
                             <tr>
                                 <th>Username</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="user in users" :key="user.id">
                                 <td>{{user.username}}</td>
                                 <td><router-link :to="`/user/${user.id}`" class='btn'>Open</router-link></td>
+                                <td><router-link :to="`/user/edit/${user.id}`" class='btn'>Edit</router-link></td>
                             </tr>
                         </tbody>
                     </table>

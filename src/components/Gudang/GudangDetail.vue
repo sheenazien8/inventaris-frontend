@@ -16,6 +16,10 @@
                 <td>Alamat Gudang:</td>
                 <td>{{ gudang.alamat }}</td>
             </tr>
+            <tr>
+                <td>Aksi:</td>
+                <td><router-link :to="`/gudang/edit/${gudang.id}`" class='btn'>Edit</router-link></td>
+            </tr>
         </table>
     </div>        
 </template>

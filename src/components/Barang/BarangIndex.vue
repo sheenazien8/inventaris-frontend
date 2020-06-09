@@ -13,6 +13,7 @@
                                 <th>Kode Barang</th>
                                 <th>Nama Barang</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -20,6 +21,7 @@
                                 <td>{{ barang.kode_barang }}</td>
                                 <td>{{ barang.nama_barang }}</td>
                                 <td><router-link :to="`/barang/${barang.id}`" class='btn'>Open</router-link></td>
+                                <td><router-link :to="`/barang/edit/${barang.id}`" class='btn'>Edit</router-link></td>
                             </tr>
                         </tbody>
                     </table>

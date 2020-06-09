@@ -5,16 +5,13 @@
                 <div class="alert alert-danger" v-if="this.add.error !== false">
                     {{ this.add.error }}
                 </div>
-                <h3>Add gudang</h3>
+                <h3>Update profil user</h3>
                 <div class="card-body">
-                    <form action="" @submit.prevent="addGudang()">
-                        <input type="text" placeholder="Nama Gudang..." class='form-control' v-model="add.nama_gudang">
-                        <input type="text" placeholder="Alamat Gudang..." class='form-control' v-model="add.alamat">
-                        <select v-if="role === -1" v-model="add.user_id" class='form-control'>
-                            <option disabled value="0">Pilih user</option>
-                            <option v-for="user in userOptions" :value="user.id">{{ user.username }} - {{ user.nama }}</option>
-                        </select>
-                        <input type="submit" value="Add gudang" class='btn float-right'>
+                    <form action="" @submit.prevent="saveUser()">
+                        <input type="text" placeholder="Nama Lengkap..." class='form-control' v-model="add.nama">
+                        <input disabled type="text" placeholder="Username..." class='form-control' v-model="add.username">
+                        <input type="password" placeholder="Password..." class='form-control' v-model="add.password">
+                        <input type="submit" value="Save profil" class='btn float-right'>
                     </form>
                 </div>
             </div>
@@ -23,21 +20,19 @@
 <script>
 export default {
     mounted() {
-        this.check()
-        this.getUserId()
-        this.getUserRole()
-        this.getUserOptions()
+        this.check();
+        this.getUserId();
+        this.getData();
     },
     data() {
         return {
             add: {
-                nama_gudang: '',
-                alamat: '',
-                user_id: 0,
+                nama: '',
+                password: '',
                 success: false,
                 error: false
             },
-            role: 0,
+            user_id: 0,
             errors: []
         }
     },
@@ -53,20 +48,18 @@ export default {
                 }
             }
         },
-        async addGudang() {
+        async saveUser() {
             try {
-                const body = {
-                    nama_gudang: this.add.nama_gudang,
-                    alamat: this.add.alamat
-                }
+                const body = {}
 
-                if (this.add.user_id != 0) body.user_id = this.add.user_id;
-                const res = await this.$axios.post(`/gudang`, body);
+                if (this.add.nama != '') body.nama = this.add.nama;
+                if (this.add.password != '') body.password = this.add.password;
+                const res = await this.$axios.patch(`/user/${this.user_id}`, body);
 
                 if (res) {
-                    this.add.success = `Gudang successfully added`;
-                    this.add.nama_gudang = '';
-                    this.add.alamat = '';
+                    this.add.success = `User successfully saved`;
+                    this.add.nama = res.data.data.nama;
+                    this.add.password = '';
                 }
             }
             catch(err) {
@@ -82,37 +75,32 @@ export default {
                 }
             }
         },
-        async getUserOptions() {
+        async getData() {
             try {
-                const user = await this.$axios.get(`/user`)
-
+                const res = await this.$axios.post(`/auth/token`);
+                const user = await this.$axios.get(`user/${this.user_id}`);
+                
                 if (user) {
-                    this.userOptions = user.data.data.data;
+                    this.add.nama = user.data.data.nama;
+                    this.add.username = user.data.data.username;
                 }
             }
             catch(err) {
-                
-            }
+                if(err.response.data.message == 'token authentication is required' ||
+                    err.response.data.message == 'invalid token') {
+                    this.$router.push('/login');
+                }
+            }                
         },
         async getUserId() {
             try {
                 const user_id = localStorage.getItem('user_id');
-                if (user_id) this.add.user_id = user_id;
+                if (user_id) this.user_id = user_id;
             }
             catch(err) {
 
             }
         },
-        async getUserRole() {
-            try {
-                const role = localStorage.getItem('role');
-                if (role) this.role = role;
-                if (role == -1) this.add.user_id = 0;
-            }
-            catch(err) {
-
-            }
-        }
     }
 }
 </script>

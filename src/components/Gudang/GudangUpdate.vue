@@ -5,16 +5,12 @@
                 <div class="alert alert-danger" v-if="this.add.error !== false">
                     {{ this.add.error }}
                 </div>
-                <h3>Add gudang</h3>
+                <h3>Edit gudang</h3>
                 <div class="card-body">
-                    <form action="" @submit.prevent="addGudang()">
+                    <form action="" @submit.prevent="saveGudang()">
                         <input type="text" placeholder="Nama Gudang..." class='form-control' v-model="add.nama_gudang">
                         <input type="text" placeholder="Alamat Gudang..." class='form-control' v-model="add.alamat">
-                        <select v-if="role === -1" v-model="add.user_id" class='form-control'>
-                            <option disabled value="0">Pilih user</option>
-                            <option v-for="user in userOptions" :value="user.id">{{ user.username }} - {{ user.nama }}</option>
-                        </select>
-                        <input type="submit" value="Add gudang" class='btn float-right'>
+                        <input type="submit" value="Save gudang" class='btn float-right'>
                     </form>
                 </div>
             </div>
@@ -27,17 +23,18 @@ export default {
         this.getUserId()
         this.getUserRole()
         this.getUserOptions()
+        this.getData()
     },
     data() {
         return {
             add: {
                 nama_gudang: '',
                 alamat: '',
-                user_id: 0,
                 success: false,
                 error: false
             },
             role: 0,
+            gudang_id: this.$route.params.id,
             errors: []
         }
     },
@@ -53,20 +50,19 @@ export default {
                 }
             }
         },
-        async addGudang() {
+        async saveGudang() {
             try {
                 const body = {
                     nama_gudang: this.add.nama_gudang,
                     alamat: this.add.alamat
                 }
 
-                if (this.add.user_id != 0) body.user_id = this.add.user_id;
-                const res = await this.$axios.post(`/gudang`, body);
+                const res = await this.$axios.patch(`/gudang/${this.gudang_id}`, body);
 
                 if (res) {
-                    this.add.success = `Gudang successfully added`;
-                    this.add.nama_gudang = '';
-                    this.add.alamat = '';
+                    this.add.success = `Gudang successfully saved`;
+                    this.add.nama_gudang = res.data.data.nama_gudang;
+                    this.add.alamat = res.data.data.alamat;
                 }
             }
             catch(err) {
@@ -107,10 +103,30 @@ export default {
             try {
                 const role = localStorage.getItem('role');
                 if (role) this.role = role;
-                if (role == -1) this.add.user_id = 0;
             }
             catch(err) {
 
+            }
+        },
+        async getData() {
+            try {
+                const gudang = await this.$axios.get(`/gudang/${this.gudang_id}`);
+                
+                if (gudang) {
+                    this.success = true; 
+                    const gudangData = gudang.data.data;
+                    this.add.nama_gudang = gudangData.nama_gudang;
+                    this.add.alamat = gudangData.alamat;
+                }
+            }
+            catch(err) {
+                if(err.response.data.message == 'token authentication is required' ||
+                    err.response.data.message == 'invalid token') {
+                    this.$router.push('/login');
+                }
+                else {
+                    this.error = err.response.message;
+                }
             }
         }
     }

@@ -14,6 +14,7 @@
                                 <th>Nama Gudang</th>
                                 <th>Alamat</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -22,6 +23,7 @@
                                 <td>{{ gudang.nama_gudang }}</td>
                                 <td>{{ gudang.alamat }}</td>
                                 <td><router-link :to="`/gudang/${gudang.id}`" class='btn'>Open</router-link></td>
+                                <td><router-link :to="`/gudang/edit/${gudang.id}`" class='btn'>Edit</router-link></td>
                             </tr>
                         </tbody>
                     </table>

@@ -11,6 +11,8 @@
             <tr>
                 <td>Username:</td>
                 <td>{{ user.username }}</td>
+                <td>Aksi</td>
+                <td><router-link :to="`/user/edit/${user.id}`" class='btn'>Edit</router-link></td>
             </tr>
         </table>
     </div>        

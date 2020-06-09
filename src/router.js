@@ -3,12 +3,16 @@ import VueRouter from 'vue-router';
 import UserIndex from './components/User/UserIndex';
 import UserAdd from './components/User/UserAdd';
 import UserDetail from './components/User/UserDetail';
+import UserUpdate from './components/User/UserUpdate';
+import UserProfile from './components/User/UserProfile';
 import BarangIndex from './components/Barang/BarangIndex';
 import BarangAdd from './components/Barang/BarangAdd';
 import BarangDetail from './components/Barang/BarangDetail';
+import BarangUpdate from './components/Barang/BarangUpdate';
 import GudangIndex from './components/Gudang/GudangIndex';
 import GudangAdd from './components/Gudang/GudangAdd';
 import GudangDetail from './components/Gudang/GudangDetail';
+import GudangUpdate from './components/Gudang/GudangUpdate';
 import InventarisIndex from './components/Inventaris/InventarisIndex';
 import InventarisAdd from './components/Inventaris/InventarisAdd';
 import InventarisDetail from './components/Inventaris/InventarisDetail';
@@ -43,6 +47,14 @@ export default new VueRouter({
             component: UserDetail
         },
         {
+            path: "/user/edit/:id",
+            component: UserUpdate
+        },
+        {
+            path: "/profile",
+            component: UserProfile
+        },
+        {
             path: "/barang",
             component: BarangIndex,
         },
@@ -55,6 +67,10 @@ export default new VueRouter({
             component: BarangDetail
         },
         {
+            path: "/barang/edit/:id",
+            component: BarangUpdate
+        },
+        {
             path: "/gudang",
             component: GudangIndex,
         },
@@ -65,6 +81,10 @@ export default new VueRouter({
         {
             path: "/gudang/:id",
             component: GudangDetail
+        },
+        {
+            path: "/gudang/edit/:id",
+            component: GudangUpdate
         },
         {
             path: "/inventaris",

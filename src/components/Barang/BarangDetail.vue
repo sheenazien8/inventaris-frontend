@@ -12,6 +12,10 @@
                 <td>Nama Barang:</td>
                 <td>{{ barang.nama_barang }}</td>
             </tr>
+            <tr>
+                <td>Action:</td>
+                <td><router-link :to="`/barang/edit/${barang.id}`" class='btn'>Edit</router-link></td>
+            </tr>
         </table>
     </div>        
 </template>
